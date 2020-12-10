@@ -8,18 +8,12 @@ function ListItems(props){
     // console.log("strung" + JSON.stringify(props.items));
     const listItems = items.map(item =>
     {
-
-        // console.log("HELLOOJOJJF"+ item.time)
-        // console.log("second"+ item.task)
-        // console.log("strung" + JSON.stringify(item));
-        // str = JSON.stringify(obj, null, 4); // (Optional) beautiful indented output.
-  
        return <div className="list" key={item.key}>
      <p >
         <input type="checkbox" onChange={(e)=>{
              props.setUpdate(e.target.value, item.key)}}/>
 
-         <input type="text" autoComplete="new-password" id={item.key} value={ item.time + ":00 | " + item.task} onChange={(e)=>{
+         <input type="text" autoComplete="new-password" id={item.key} value={item.task} onChange={(e)=>{
              props.setUpdate(e.target.value, item.key)}} style = {{
                     textDecoration: item.completed ? "line-through" : null
                 }}/>
