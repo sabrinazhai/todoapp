@@ -1,12 +1,13 @@
 import React from 'react';
 // import logo from './logo.svg';
-import './App.css';
 import ListItems from './ListItems'
 import Schedule from './Schedule'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faTrash)
+import { Container, Row, Col } from 'react-bootstrap';
+import './App.css';
+// import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 var startTime = 0;
 var endTime = 0;
@@ -15,118 +16,141 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      date: "",
       items:[],
+      schedule: [],
       currentItem:{
         task:'',
         key:'',
         time: 0,
         completed: false
       },
-      schedule: []
     }
     // console.log("starting out : " + JSON.stringify(this.state.currentItem));
 
-  
+
 
     this.addItem = this.addItem.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.deleteScheduleItem = this.deleteScheduleItem.bind(this);
     this.toggleComplete = this.toggleComplete.bind(this);
     this.setUpdate = this.setUpdate.bind(this);
-    this.populateList = this.populateList.bind(this);
+    this.setScheduleUpdate = this.setScheduleUpdate.bind(this);
     this.setStart = this.setStart.bind(this);
     this.setEnd = this.setEnd.bind(this);
-    // this.loadItems = this.loadItems.bind(this);
     this.addSchedule = this.addSchedule.bind(this);
-    this.getSchedule = this.getSchedule.bind(this);
+    this.displayItems = this.displayItems.bind(this);
+  }
+
+   displayItems(e){
+    if (localStorage.getItem("taskList") !== null) {
+        this.setState({ items: JSON.parse(localStorage.getItem("taskList")) })
+    }
+    if (localStorage.getItem("scheduleItems") !== null) {
+      this.setState({ schedule: JSON.parse(localStorage.getItem("scheduleItems")) }) 
+     }
+   }
+
+  logTaskList(arr){
+    this.setState({ items: arr })
+    localStorage.setItem("taskList", JSON.stringify(arr));
+  }
+
+  logScheduleItems(arr){
+    this.setState({ schedule: arr })
+    localStorage.setItem("scheduleItems", JSON.stringify(arr));
+  }
+
+  addItem(e){
+    e.preventDefault();
+    const newItem = this.state.currentItem;
+    if(newItem.task !== ""){
+      const taskItems = [...this.state.items, newItem];
+        this.setState({ //Resets to default
+         currentItem:{
+           task:'',
+           key:'',
+           time: 0,
+           completed: false
+         }
+       })
+      this.logTaskList(taskItems);          
+    }
   }
 
 
+    //check if this.state.schedule is empty
+    //cycle through it and check if the task is == ''
+      //if not, replace the new task with it
+    //send array to the this.statesscheudle
 
-   // loadItems(){
-   //    console.log("continuoous" + this.state.items);
-   //    this.state.items = JSON.parse(localStorage.getItem('listItems'));
-   // }
+    // const scheduleArray = timeArray.map(time => { currentArray[x].key === time }
+       // if (currentArray && currentArray.length){ //if the stored array is not empty
+        // if (x < currentArray.length){
+          // if (currentArray.filter(item => item.key === parseInt(startTime) + parseInt(x))) {
+          //   taskValue = item.task;
+          // }
+          // console.log("time: " + currentArray[x].time);
+          // console.log(parseInt(startTime) + parseInt(x));
+          // taskValue = currentArray[x].task;
+          // console.log("x: " + x + " task value: " + JSON.stringify(currentArray[x].task));
+        // }
+      // }
+  addSchedule(e){
+    e.preventDefault();
 
-    addItem(e){
-        e.preventDefault();
-        const newItem = this.state.currentItem;
-        if(newItem.task !==""){
-            const taskItems = [...this.state.items, newItem];
-            this.setState({ //Resets to default
-               items: taskItems,
-               currentItem:{
-                 task:'',
-                 key:'',
-                 time: 0,
-                 completed: false
-               }
-            })
+    const currentArray = this.state.schedule;
+    const timeArray = Array.from({length: endTime - startTime + 1}, (_, index) => index + parseInt(startTime));
 
-            localStorage.setItem('listItems', JSON.stringify(taskItems));           
-        }
-    }
+    console.log("current array:  " + JSON.stringify(currentArray));
+    
+    // let scheduleItem = {}
+    let taskValue = "";
 
-    getSchedule(){
-      // window.localStorage.clear();
-      console.log(localStorage.getItem("schedule"));
-      // var tempSched = JSON.parse(localStorage.getItem("schedule")) || [];
-      // this.setState({ schedule: tempSched})
-    }
+    const scheduleArray = timeArray.map(time => {
+      // if (currentArray.some(x => x.key === time )){
+      //   taskValue = x.task;
+      // }
 
-    addSchedule(e){
-      console.log("initial " + JSON.stringify(this.state.schedule, null, 4));
-      e.preventDefault();
+    const scheduleItem = {
+                      task:taskValue,
+                      key: time,
+                      time: time,
+                      completed: false
+                      }
+      
+      return scheduleItem
+    }) // end of thee map function
+      console.log("final schedule:" + JSON.stringify(scheduleArray));
+      this.logScheduleItems(scheduleArray);
+  }
 
-      const stepsArray = Array.from({length: endTime - startTime + 1}, (_, index) => index + 1);
-      const scheduleArray = stepsArray.map(x => ({
-                                                  task:'',
-                                                  key:Date.now(),
-                                                  time: parseInt(startTime) + parseInt(x) - 1,
-                                                  completed: false
-                                                })
-        
-      )
-      this.setState({ schedule: scheduleArray})
-      localStorage.setItem("schedule", JSON.stringify(this.state.schedule));
-    }
-
-  handleInput(e){
-    this.setState({
-      currentItem:{
+    handleInput(e){
+      this.setState({
+        currentItem:{
          task: e.target.value,
          key: Date.now(),
          time: startTime,
          completed: false
-      }
-    })
-
-  }
-
-
+       }
+     })
+    }
 
   //Deletes an item from the list
   deleteItem(key){
     const filteredItems= this.state.items.filter(item =>
       item.key!==key);
-    this.setState({
-      items: filteredItems
-    })
-
+    this.logTaskList(filteredItems);
   }
 
-   //Toggles the completion of a task
-   toggleComplete(value, key){
-      const tempItem = this.state.items;
-      tempItem.map( x =>{      
-         if(x.key===key){ //If it is the item we are looking for 
-           x.completed = !x.completed;
-         }
-      })
-      this.setState({
-         items: tempItem
-      })
-      console.log("current completion:" + this.state.completed);
+  //Deletes an item from the schedule
+  deleteScheduleItem(key){
+    console.log("in the deleteScheduleItem method");
+    const filteredItems= this.state.schedule.filter(item =>
+      item.key!==key);
+    console.log("schedule from js:  " + JSON.stringify(filteredItems, null, 4));
+    this.logScheduleItems(filteredItems);
   }
 
   //Updates the task 
@@ -135,95 +159,112 @@ class App extends React.Component {
     tempItem.map( x =>{      
       if(x.key===key){
         x.task = task;
-        x.completed = !x.completed;  
-
-        if(x.completed){
-            x.textDecor='line';
-         }
-         else{
-            x.textDecor = null;
-         }
       }
-
-
-      console.log("current completion:" + x.completed);
+      return tempItem
     })
-  
-    this.setState({
-      items: tempItem
-    })
-    console.log("ITEMS OUTSIDE: " + JSON.stringify(this.state.items));
-
-    
+    this.logTaskList(tempItem);
   }
 
-   populateList(){
-      console.log("the start is:" + startTime);
-      console.log("the END is:" + endTime);
+  //Updates the task in the schedule
+  setScheduleUpdate(input, key){
+    const tempItem = this.state.schedule;
+    tempItem.map( x =>{      
+      if(x.key===key){
+        x.task = input;
 
-      //take the two key values from the input box
-      const total = endTime - startTime;
-      for (let i = 0; i < total; i++){
-        //create list with the start time and end time as its state
+        return tempItem
+        // x.completed = !x.completed;  
       }
-   }
-
-
-
-    setStart(e){
-        e.preventDefault();
-        startTime = e.target.value;
-        // populateList();
-   }
-
-    setEnd(e){
-        e.preventDefault();
-        endTime = e.target.value;
-        // populateList();
-    }
-
-    componentDidMount(){
-      var options = {  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-      var prnDt = 'Printed on ' + new Date().toLocaleTimeString('en-us', options);
-
-      console.log(prnDt);
-      this.getSchedule();
-      console.log("finish function");
-      }
-
-
- render(){
-  return (
-   // this.state.items = JSON.parse(localStorage.getItem('listItems'))
-   <div className = "Container">
-    <div className="App">
-      <header>
-
-        <form id="to-do-form" onSubmit={this.addItem}>
-          <input type="text" id = "taskName" placeholder="Enter task" value= {this.state.currentItem.task} onChange={this.handleInput}></input>
-          <button type="submit">Add Task</button>
-        </form>
-        <p>{this.state.items.task}</p>
-          <ListItems items={this.state.items} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/>
-
-      </header>
-    </div>
-
-    <div className="App">
-      <header>
-      
-        <form id="to-do-form" onSubmit={this.addSchedule}>
-          <input type="number" min="0" max="23" value = {this.state.currentItem.start} onChange = {this.setStart}></input>
-          <input type="number" min="0" max="23" value = {this.state.currentItem.end}  onChange = {this.setEnd}></input>
-          <button type="submit">Create</button>
-        </form>
-          <Schedule schedule = {this.state.schedule} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/>
-      </header>
-    </div>
-    </div>
-  );
- }
+    })
+    // console.log("tempItem variable: " + JSON.stringify(tempItem));
+    this.logScheduleItems(tempItem);
 }
 
 
-export default App;
+   //Toggles the completion of a task
+   toggleComplete(value, key){
+    const tempItem = this.state.items;
+    tempItem.map( x =>{      
+         if(x.key===key){ //If it is the item we are looking for 
+           x.completed = !x.completed;
+         }
+       })
+    this.setState({
+     items: tempItem
+   })
+  }
+  setStart(e){
+    e.preventDefault();
+    startTime = e.target.value;
+
+  }
+
+  setEnd(e){
+    e.preventDefault();
+    endTime = e.target.value;
+
+  }
+
+  componentDidMount(){
+    var options = {  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+    var prnDt = new Date().toLocaleTimeString('en-us', options);
+    const k = prnDt.indexOf(",", prnDt.indexOf(",") + 1);
+
+    this.setState({
+      date: prnDt.substring(0,k)
+    })
+    this.displayItems();
+    console.log("finish function");
+  }
+
+
+  render(){
+    return (
+      <Container>
+        <Row className = "top">
+        <Col className = "todayDate">
+          <FontAwesomeIcon className="calendar" icon={faCalendar}/>
+          {this.state.date}
+        </Col>
+        <Col>
+           <h2> tasks </h2>
+            <div className="App">
+                <form id="to-do-form" onSubmit={this.addItem}>
+                   <input type="text" id = "taskName" placeholder="Enter task" value= {this.state.currentItem.task} onChange={this.handleInput}></input>
+                   <button type="submit">Add Task</button>
+                </form>
+                <p>{this.state.items.task}</p>
+                <ListItems items={this.state.items} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/>
+
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h2> today </h2>
+            <div className="App">
+                <form id="to-do-form" onSubmit={this.addSchedule}>
+                  <input type="number" min="0" max="23" placeholder = "Start" value = {this.state.currentItem.start} onChange = {this.setStart}></input>
+                  <input type="number" min="0" max="23" placeholder = "End" value = {this.state.currentItem.end}  onChange = {this.setEnd}></input>
+                  <button type="submit">Create Schedule</button>
+                </form>
+                <Schedule schedule = {this.state.schedule} deleteScheduleItem={this.deleteScheduleItem} setScheduleUpdate={this.setScheduleUpdate}/>
+            </div>
+          </Col>
+
+          <Col>
+           <h2> tomorrow </h2>
+            <div className="App">
+                <form id="to-do-form" onSubmit={this.addItem}>
+                   <input type="text" id = "taskName" placeholder="Enter task" value= {this.state.currentItem.task} onChange={this.handleInput}></input>
+                   <button type="submit">Add Task</button>
+                </form>
+                <ListItems items={this.state.items} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/>
+
+            </div>
+          </Col>
+        </Row>
+      </Container>
+     );
+  }
+} export default App;

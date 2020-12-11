@@ -1,32 +1,48 @@
 .list{ /*trash can icon*/
     color: #4E4E4E;
     width: 300px;
-    margin: 20px auto;
-    height: 50px;
+    height: 40px;
     background-color: #E5E5E5;
+    border-top: 1px solid;
     border-color: #000;
-    border-style: solid;
     border-width: thin;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
+    margin: 10px;
 }
-.list p{
-    padding: 10px;
-    position: relative;
+.list .taskItem{
+    padding-top:15px;
+    display: flex;
+    align-items: flex-start;
     transition: ease-in-out;
+    margin-left:10px;
 }
-.list p input{
+
+.list .taskItem input[type=checkbox]{
+    margin-top:5px;
+    margin-right: 5px;
+}
+
+.list .taskItem label{
+    font-weight: bold;
+    font-size: 1em;
+
+}
+.list .taskItem input{
     background-color: transparent;
     border: 0;
     color: #4E4E4E;
-    font-size: 18px;
+    font-size: 1em;
+
 }
-.hi{
-    text-decoration: line-through;
+
+.list .taskItem input[type = text]{
+    margin-left: 1em;
 }
-.list p input:focus{
-    outline: none;
+
+.list .taskItem input:focus{
+    outline: thin;
 }
-.list p span{
+.list .taskItem span{
     position: absolute;
     right: 10px;
 }
