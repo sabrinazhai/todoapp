@@ -5,7 +5,6 @@ import Schedule from './Schedule'
 
 import { Container, Row, Col } from 'react-bootstrap';
 import './App.css';
-// import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -109,9 +108,11 @@ class App extends React.Component {
     let taskValue = "";
 
     const scheduleArray = timeArray.map(time => {
-      // if (currentArray.some(x => x.key === time )){
-      //   taskValue = x.task;
-      // }
+      const match = currentArray.find(x => x.key === time);
+      console.log("match: " + JSON.stringify(match, null, 4));
+      if ( match ){
+        taskValue = match.task;
+      }
 
     const scheduleItem = {
                       task:taskValue,
@@ -120,9 +121,9 @@ class App extends React.Component {
                       completed: false
                       }
       
-      return scheduleItem
+    return scheduleItem
     }) // end of thee map function
-      console.log("final schedule:" + JSON.stringify(scheduleArray));
+      // console.log("final schedule:" + JSON.stringify(scheduleArray));
       this.logScheduleItems(scheduleArray);
   }
 
@@ -152,6 +153,9 @@ class App extends React.Component {
     console.log("schedule from js:  " + JSON.stringify(filteredItems, null, 4));
     this.logScheduleItems(filteredItems);
   }
+  
+  //const listName = "schedule";
+  //this.state[listName]
 
   //Updates the task 
   setUpdate(task, key){
