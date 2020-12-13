@@ -7,28 +7,24 @@ import { Container, Row } from 'react-bootstrap';
 
 function ListItems(props){
     const items = props.items;
-    // console.log("strung" + JSON.stringify(props.items));
-    const listItems = items.map(item =>
-    {
-     return <Container className="list" key={item.key}>
-                <Row className = "taskItem">
-                    <input type="checkbox" onChange={(e)=>{
-                    props.setUpdate(e.target.value, item.key)}}/>
-
-                    <input type="text" autoComplete="new-password" id={item.key} value={item.task} onChange={(e)=>{
-                    props.setUpdate(e.target.value, item.key)}} />
-                   
-                   <span>
-                   <FontAwesomeIcon className="faicons" onClick={() => {
-                                                                props.deleteItem(item.key)
-                                                                }} icon={faMinus} />
-                    </span>
-                </Row>
-            </Container>
+    const listItems = items.map(item => {
+        return <Container className="list" key={item.key}>
+            <Row className = "taskItem">
+                <input type="checkbox" checked = {item.completed} onChange={(e)=>{
+                props.toggleComplete("items", e.target.value, item.key)}}/>
+                <input type="text" autoComplete="new-password" value={item.task} onChange={(e)=>{
+                props.setUpdate("items", e.target.value, item.key)}} />
+               <span>
+               <FontAwesomeIcon className="faicons" onClick={() => {
+                                                        props.deleteItem("items", item.key)
+                                                            }} icon={faMinus} />
+                </span>
+            </Row>
+        </Container>
     })
 
     return <div>
-        <FlipMove duration={300} easing="ease-in-out">
+        <FlipMove duration={100} easing="ease-in-out">
             {listItems}
         </FlipMove>
     </div>;

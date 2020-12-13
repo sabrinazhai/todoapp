@@ -1,34 +1,20 @@
 import React from 'react';
 import './ListItems.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus } from '@fortawesome/free-solid-svg-icons'
 import FlipMove from 'react-flip-move';
 import { Container, Row } from 'react-bootstrap';
 
 
 function Schedule(props){
     const schedule = props.schedule;
-    //       <p> {item.time + ":00"} </p>
-    // console.log("schedule from js:  " + JSON.stringify(schedule, null, 4));
-    const scheduleItems = schedule.map(item =>
-    {
-      return <Container className = "list" key={item.key}>
+    const scheduleItems = schedule.map(item => {
+        return <Container className = "list" key={item.key}>
 	       <Row className = "taskItem">
-
-	       		<input type="checkbox" onChange={(e)=>{
-                    props.setScheduleUpdate(e.target.value, item.key)}}/>
-
+	       		<input type="checkbox" checked = {item.completed} onChange={(e)=>{
+                    props.toggleComplete("schedule", e.target.value, item.key)}}/>
                 <label htmlFor = "checkbox"> {item.time + ":00"} </label>
-		 
-
-		        <input type="text" autoComplete="new-password" id={item.key} 
+		        <input type="text" autoComplete="new-password"
 		         		value={item.task} onChange={(e)=>{ 
-		         							props.setScheduleUpdate(e.target.value, item.key)}} />
-
-		 		<span>
-		 		<FontAwesomeIcon className="faicons" onClick={() => {
-												            props.deleteScheduleItem(item.key)
-												        	}} icon={faMinus} /></span>
+		         		   props.setUpdate("schedule", e.target.value, item.key)}} />
 	        </Row>
         </Container>
     })

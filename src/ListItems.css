@@ -1,12 +1,8 @@
-.list{ /*trash can icon*/
+.list{ 
     color: #4E4E4E;
     width: 300px;
-    height: 40px;
-    background-color: #E5E5E5;
-    border-top: 1px solid;
-    border-color: #000;
-    border-width: thin;
-    /*border-radius: 5px;*/
+    height: 20px;
+    background-color: transparent;
     margin: 10px;
 }
 .list .taskItem{
@@ -20,11 +16,47 @@
 .list .taskItem input[type=checkbox]{
     margin-top:5px;
     margin-right: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+.list .taskItem input[type=checkbox]:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    border: 1px solid #555555;
+    border-radius: 3px;
+    background-color: #E5E5E5;
+}
+
+.list .taskItem input[type=checkbox]:checked:after {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 1px 1px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    top: 2px;
+    left: 5px;
+}
+
+.list .taskItem input[type=checkbox]:checked:after {
+  background-color: transparent;
+  color: #fff;
 }
 
 .list .taskItem label{
     font-weight: bold;
     font-size: 1em;
+    margin-left: 1em;
 
 }
 .list .taskItem input{
@@ -32,7 +64,6 @@
     border: 0;
     color: #4E4E4E;
     font-size: 1em;
-
 }
 
 .list .taskItem input[type = text]{
